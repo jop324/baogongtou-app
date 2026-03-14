@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build outputs
+dist/
+client/dist/
+client/src-tauri/target/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Tauri
+client/src-tauri/icons/
+client/src-tauri/*.exe
+client/src-tauri/*.msi
+client/src-tauri/bundle/
+
+# Data files
+data.json
+download_history.json
+*.db
+
+# Temp files
+*.bak
+*.tmp
+nul
+
+# Rust
+target/
+Cargo.lock
+
+# Session files
+session-*.md
+.sisyphus/
