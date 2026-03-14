@@ -2,17 +2,14 @@
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/baogongtou/baogongtou-app?style=flat)](https://github.com/baogongtou/baogongtou-app/stargazers)
-[![GitHub license](https://img.shields.io/github/license/baogongtou/baogongtou-app)](https://github.com/baogongtou/baogongtou-app)
-[![Platform](https://img.shields.io/badge/platform-Windows-blue)](https://github.com/baogongtou/baogongtou-app/releases)
+[![GitHub stars](https://img.shields.io/github/stars/jop324/baogongtou-v2?style=flat)](https://github.com/jop324/baogongtou-v2/stargazers)
+[![GitHub license](https://img.shields.io/github/license/jop324/baogongtou-v2)](https://github.com/jop324/baogongtou-v2)
+[![Platform](https://img.shields.io/badge/platform-Windows-blue)](https://github.com/jop324/baogongtou-v2/releases)
+[![Release](https://img.shields.io/github/v/release/jop324/baogongtou-v2)](https://github.com/jop324/baogongtou-v2/releases)
 
 基于 Tauri + React + Node.js 构建的建筑工程施工管理系统
 
 </div>
-
-## 📱 软件截图
-
-![主界面](screenshots/demo.png)
 
 ## ✨ 功能介绍
 
@@ -65,8 +62,6 @@
 ### 方式一：直接安装（推荐）
 
 下载最新安装包：
-
-- [建筑包工头_1.0.0_x64-setup.exe](https://github.com/baogongtou/baogongtou-app/releases)
 
 安装后即可使用。
 
@@ -173,7 +168,7 @@ MIT License - 自由使用、修改和分发
 
 ## 🐛 问题反馈
 
-如有 Bug 或功能建议，请提交 [Issue](https://github.com/baogongtou/baogongtou-app/issues)
+如有 Bug 或功能建议，请提交 [Issue](https://github.com/jop324/baogongtou-v2/issues)
 
 ---
 
