@@ -2,10 +2,10 @@
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/jop324/baogongtou-v2?style=flat)](https://github.com/jop324/baogongtou-v2/stargazers)
-[![GitHub license](https://img.shields.io/github/license/jop324/baogongtou-v2)](https://github.com/jop324/baogongtou-v2)
-[![Platform](https://img.shields.io/badge/platform-Windows-blue)](https://github.com/jop324/baogongtou-v2/releases)
-[![Release](https://img.shields.io/github/v/release/jop324/baogongtou-v2)](https://github.com/jop324/baogongtou-v2/releases)
+[![GitHub stars](https://img.shields.io/github/stars/jop324/baogongtou-app?style=flat)](https://github.com/jop324/baogongtou-app/stargazers)
+[![GitHub license](https://img.shields.io/github/license/jop324/baogongtou-app)](https://github.com/jop324/baogongtou-app)
+[![Platform](https://img.shields.io/badge/platform-Windows-blue)](https://github.com/jop324/baogongtou-app/releases)
+[![Release](https://img.shields.io/github/v/release/jop324/baogongtou-app)](https://github.com/jop324/baogongtou-app/releases)
 
 基于 Tauri + React + Node.js 构建的建筑工程施工管理系统
 
@@ -36,15 +36,17 @@
 - 按工人/月份筛选
 
 ### 5. 统计查询
-- 月度概览卡片（在职工人、总工日、生活费、工资、总支出）
+- 月度概览卡片（在职工人、总工日，生活费、工资、总支出）
 - 工人明细统计
   - 出勤天数
   - 生活费支出
   - 工资支出
-  - 小计
+  - 合计支出
+  - **剩余工钱**（应收工资 - 已发生活费 - 已发工资）
 
 ### 6. 数据导出
-- 导出为 Excel 格式
+- 导出为 CSV 格式（可用 Excel/WPS 打开）
+- 支持导出：工人信息、考勤记录、支出记录、月度汇总表
 
 ## 🛠️ 技术栈
 
@@ -54,8 +56,8 @@
 | UI 框架 | Tailwind CSS |
 | 构建工具 | Vite |
 | 桌面框架 | Tauri 2.x |
-| 后端 | Node.js + Express |
-| 数据库 | JSON 文件存储 |
+| 后端 | Node.js + Express (打包为独立可执行文件) |
+| 数据库 | SQLite (sql.js) |
 
 ## 📦 安装
 
@@ -63,7 +65,7 @@
 
 下载最新安装包：
 
-安装后即可使用。
+安装后即可使用，**无需安装 Node.js**。
 
 ### 方式二：开发模式运行
 
@@ -77,7 +79,7 @@
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/baogongtou/baogongtou-app.git
+git clone https://github.com/jop324/baogongtou-app.git
 cd baogongtou-app
 
 # 2. 安装前端依赖
@@ -131,9 +133,10 @@ baogongtou-app/
 │   └── dist/             # 构建输出
 ├── server/               # 后端服务
 │   ├── src/
-│   │   ├── index.js      # Express 服务入口
+│   │   ├── index.js      # Express 服务入口（开发用）
 │   │   └── db.js         # 数据模型
-│   └── data.json         # 数据存储
+│   ├── app.js            # 打包用入口文件
+│   └── server.exe        # 打包后的独立可执行文件
 └── README.md
 ```
 
@@ -143,7 +146,7 @@ baogongtou-app/
 
 后端默认端口 `3001`，如需修改：
 
-1. 编辑 `server/src/index.js`：
+1. 编辑 `server/app.js`（打包用）：
 ```javascript
 const PORT = process.env.PORT || 3001; // 改为其他端口
 ```
@@ -156,7 +159,20 @@ const API_BASE = import.meta.env.PROD ? 'http://localhost:3001/api' : '/api';
 
 ### 数据位置
 
-数据文件位于 `server/data.json`，可手动备份或迁移。
+- **开发环境**：`server/data.db`
+- **安装后**：`exe同目录/data.db`
+
+数据文件自动创建在程序所在目录，无需手动配置。
+
+### 数据备份
+
+直接复制 `data.db` 文件即可备份或迁移数据。
+
+## ⚡ 性能优化
+
+- **SQLite 数据库**：相比 JSON 文件，查询性能提升显著，支持万级数据流畅运行
+- **独立服务端**：打包为独立 exe，无需客户安装 Node.js
+- **静默启动**：服务端无窗口，随主程序自动启动/关闭
 
 ## 🤝 贡献
 
@@ -168,7 +184,7 @@ MIT License - 自由使用、修改和分发
 
 ## 🐛 问题反馈
 
-如有 Bug 或功能建议，请提交 [Issue](https://github.com/jop324/baogongtou-v2/issues)
+如有 Bug 或功能建议，请提交 [Issue](https://github.com/jop324/baogongtou-app/issues)
 
 ---
 
