@@ -2,8 +2,33 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 
-// 简单的内存数据库
-const dataPath = path.join(__dirname, '..', 'data.json');
+// 数据文件放在 server 目录同级的数据目录
+// 优先使用 exe 所在目录，否则使用当前目录
+function getDataPath() {
+  const exeDir = path.dirname(process.execPath);
+  const appDir = path.join(__dirname, '..');
+  
+  // 尝试使用 exe 同级的 data 目录
+  const exeDataDir = path.join(exeDir, 'data');
+  const appDataDir = path.join(appDir, 'data.json');
+  
+  // 确保 exe 同级目录可写
+  if (!exeDir.includes('app.asar')) {
+    if (!fs.existsSync(exeDataDir)) {
+      try {
+        fs.mkdirSync(exeDataDir, { recursive: true });
+      } catch (e) {
+        console.log('[WARN] 无法创建数据目录，使用备选路径');
+      }
+    }
+    return path.join(exeDataDir, 'data.json');
+  }
+  
+  // 备选：使用 app 目录
+  return appDataDir;
+}
+
+const dataPath = getDataPath();
 
 function loadDb() {
   try {

@@ -79,6 +79,12 @@ export default function Statistics() {
   const totalDays = workerStats.reduce((sum, w) => sum + (w.totalDays || 0), 0);
   const totalLiving = workerStats.reduce((sum, w) => sum + (w.totalLiving || 0), 0);
   const totalWage = workerStats.reduce((sum, w) => sum + (w.totalWage || 0), 0);
+  const totalWageEarned = workerStats.reduce((sum, w) => {
+    const worker = workers.find(ww => ww.id === w.id);
+    const dailyRate = w.dailyRate || worker?.dailyRate || 0;
+    return sum + (w.totalDays || 0) * dailyRate;
+  }, 0);
+  const totalRemainingWage = totalWageEarned - totalLiving - totalWage;
 
   if (loading) {
     return <div className="text-center py-8">加载中...</div>;
@@ -163,19 +169,21 @@ export default function Statistics() {
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-600">生活费</th>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-600">工资</th>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-600">小计</th>
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-600">剩余工钱</th>
               </tr>
             </thead>
             <tbody>
               {workerStats.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-6 sm:py-8 text-center text-gray-500 text-sm">暂无统计数据</td>
+                  <td colSpan={8} className="px-4 py-6 sm:py-8 text-center text-gray-500 text-sm">暂无统计数据</td>
                 </tr>
               ) : (
                 workerStats.map((stat) => {
                   const worker = workers.find(w => w.id === stat.id);
                   const dailyRate = stat.dailyRate || worker?.dailyRate || 0;
                   const wageEarned = stat.totalDays * dailyRate;
-                  const total = (stat.totalLiving || 0) + (stat.totalWage || 0);
+                  const totalExpense = (stat.totalLiving || 0) + (stat.totalWage || 0);
+                  const remainingWage = wageEarned - totalExpense;
                   
                   return (
                     <tr key={stat.id} className="border-t hover:bg-gray-50">
@@ -185,7 +193,8 @@ export default function Statistics() {
                       <td className="px-2 sm:px-4 py-2 sm:py-3 text-right font-medium text-sm">{stat.totalDays || 0}</td>
                       <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-orange-600 text-sm">¥{(stat.totalLiving || 0).toLocaleString()}</td>
                       <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-green-600 text-sm">¥{(stat.totalWage || 0).toLocaleString()}</td>
-                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-right font-bold text-gray-800 text-sm">¥{total.toLocaleString()}</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-right font-bold text-gray-800 text-sm">¥{totalExpense.toLocaleString()}</td>
+                      <td className={`px-2 sm:px-4 py-2 sm:py-3 text-right font-bold text-sm ${remainingWage >= 0 ? 'text-blue-600' : 'text-red-600'}`}>¥{remainingWage.toLocaleString()}</td>
                     </tr>
                   );
                 })
@@ -198,6 +207,7 @@ export default function Statistics() {
                   <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-orange-600 text-sm">¥{totalLiving.toLocaleString()}</td>
                   <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-green-600 text-sm">¥{totalWage.toLocaleString()}</td>
                   <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-gray-800 text-sm">¥{(totalLiving + totalWage).toLocaleString()}</td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-blue-600 text-sm">¥{totalRemainingWage.toLocaleString()}</td>
                 </tr>
               )}
             </tbody>

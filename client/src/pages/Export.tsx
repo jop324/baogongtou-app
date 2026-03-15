@@ -31,10 +31,34 @@ export default function Export() {
         overviewApi.get(year, month),
       ]);
       
+      // 获取每个工人的支出统计并合并
+      const activeWorkers = workersData.filter(w => w.status === 'active');
+      const expensePromises = activeWorkers.map(async (worker) => {
+        try {
+          const expenseStats = await expenseApi.getWorkerStats(worker.id, year, month);
+          return { workerId: worker.id, ...expenseStats };
+        } catch {
+          return { workerId: worker.id, totalLiving: 0, totalWage: 0 };
+        }
+      });
+      
+      const expenseResults = await Promise.all(expensePromises);
+      const expenseMap = new Map(expenseResults.map(e => [e.workerId, e]));
+      
+      // 合并考勤和支出数据
+      const mergedStats = statsData.map(stat => {
+        const expenseData = expenseMap.get(stat.id) || { totalLiving: 0, totalWage: 0 };
+        return {
+          ...stat,
+          totalLiving: expenseData.totalLiving,
+          totalWage: expenseData.totalWage,
+        };
+      });
+      
       setWorkers(workersData);
       setAttendance(attendanceData);
       setExpenses(expensesData);
-      setWorkerStats(statsData);
+      setWorkerStats(mergedStats);
       setOverview(overviewData);
     } catch (error) {
       console.error('加载数据失败:', error);
@@ -141,6 +165,8 @@ export default function Export() {
       const worker = workers.find(w => w.id === stat.id);
       const dailyRate = stat.dailyRate || worker?.dailyRate || 0;
       const wageEarned = stat.totalDays * dailyRate;
+      const totalExpense = (stat.totalLiving || 0) + (stat.totalWage || 0);
+      const remainingWage = wageEarned - totalExpense;
       
       return {
         姓名: stat.name,
@@ -150,7 +176,8 @@ export default function Export() {
         应收工资: wageEarned,
         生活费: stat.totalLiving || 0,
         工资: stat.totalWage || 0,
-        合计支出: (stat.totalLiving || 0) + (stat.totalWage || 0),
+        合计支出: totalExpense,
+        剩余工钱: remainingWage,
       };
     });
 
@@ -163,6 +190,7 @@ export default function Export() {
     }, 0);
     const totalLiving = workerStats.reduce((sum, w) => sum + (w.totalLiving || 0), 0);
     const totalWage = workerStats.reduce((sum, w) => sum + (w.totalWage || 0), 0);
+    const totalRemainingWage = totalWageEarned - totalLiving - totalWage;
 
     data.push({
       姓名: '合计',
@@ -173,6 +201,7 @@ export default function Export() {
       生活费: totalLiving,
       工资: totalWage,
       合计支出: totalLiving + totalWage,
+      剩余工钱: totalRemainingWage,
     });
 
     exportToCSV(data, '月度汇总表');

@@ -28,8 +28,8 @@
     "active": true,
     "targets": ["nsis"],
     "resources": {
-      "../../server": "server",
-      "../../server/node_modules": "server/node_modules"
+      "../../server/server.exe": "server.exe",
+      "../../server/node_modules/sql.js/dist/sql-wasm.wasm": "sql-wasm.wasm"
     },
     "icon": [
       "icons/32x32.png",
